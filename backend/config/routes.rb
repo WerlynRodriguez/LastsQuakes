@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :earthquake, only: [:index] do
-        resources :comment, only: [:create]
+        resources :comment, only: [:create, :index]
       end
     end
   end

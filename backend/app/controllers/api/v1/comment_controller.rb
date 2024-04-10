@@ -1,7 +1,7 @@
 class Api::V1::CommentController < ApplicationController
-  before_action :set_earthquake, only: [:create]
+  before_action :set_earthquake, only: [:create, :index]
 
-  # GET /api/v1/earthquakes/:earthquake_id/comments
+  # POST /api/v1/earthquakes/:earthquake_id/comments
   def create
     comment = @earthquake.comments.new(comment_params)
 
@@ -10,6 +10,10 @@ class Api::V1::CommentController < ApplicationController
     else
       render json: { error: comment.errors.full_messages }, status: :bad_request
     end
+  end
+
+  def index
+    render json: @earthquake.comments, status: :ok
   end
 
   private
