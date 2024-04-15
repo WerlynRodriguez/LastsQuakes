@@ -19,3 +19,7 @@ export const FeaturesApi = Object.freeze({
         return `${makeUrl('features')}?${params.toString()}`;
     }
 });
+
+export const CommentsApi = Object.freeze({
+    getAllByFeatureId: (featureId: number) => makeUrl(`features/${featureId}/comments`)
+});

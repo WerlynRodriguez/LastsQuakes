@@ -7,17 +7,17 @@ import Select from "../../components/Select";
 import Pagination from "../../components/Pagination";
 import type { TPagination } from "../../types/metadata";
 import type { TFeature, TFeatureCollection } from "../../types/feature";
-import { FeaturesApi } from "../../api";
+import { FeaturesApi, CommentsApi } from "../../api";
 import Dialog from "../../components/Dialog";
 
 import "./styles.css";
 
 function App() {
-  const controllerRef = useRef<AbortController>(new AbortController());
-
   const [loadData, setLoadData] = useState<boolean>(false);
   const [features, setFeatures] = useState<TFeature[]>([]);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
+
+  const [messages, setMessages] = useState<string[]>([]);
 
   const [mgFilter, setMgFilter] = useState<Set<string>>(new Set());
   const [paginDisplay, setPaginDisplay] = useState<TPagination>({
@@ -27,14 +27,48 @@ function App() {
   });
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     getData();
 
     return () => {
-      controllerRef.current.abort();
+      abortController.abort();
     };
   }, []);
 
-  const getData = async (page = paginDisplay.current_page) => {
+  useEffect(() => {
+    if (selectedFeature === null) return;
+
+    const abortController = new AbortController();
+
+    const getComments = async () => {
+      const url = CommentsApi.getAllByFeatureId(selectedFeature);
+
+      const data: string[] = await fetch(url, {
+        signal: abortController.signal,
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Error");
+          return res.json();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      if (data) setMessages(data);
+    };
+
+    getComments();
+
+    return () => {
+      abortController.abort();
+    };
+  }, [selectedFeature]);
+
+  const getData = async (
+    page = paginDisplay.current_page,
+    signal?: AbortSignal
+  ) => {
     if (loadData) return;
     setLoadData(true);
 
@@ -45,7 +79,7 @@ function App() {
     });
 
     const data: TFeatureCollection = await fetch(url, {
-      signal: controllerRef.current.signal,
+      signal,
     })
       .then((res) => res.json())
       .catch((error) => {
@@ -69,7 +103,11 @@ function App() {
             aria-label="Buscar"
             onClick={() => getData()}
           >
-            {loadData ? <Icon name="refresh" className="load" /> : <Icon name="search" />}
+            {loadData ? (
+              <Icon name="refresh" className="load" />
+            ) : (
+              <Icon name="search" />
+            )}
           </button>
 
           <Select
@@ -131,7 +169,11 @@ function App() {
         open={selectedFeature !== null}
         onClose={() => setSelectedFeature(null)}
       >
-        selected feature index is {selectedFeature}
+        <ul>
+          {messages.map((message, index) => (
+            <li key={index}>{message}</li>
+          ))}
+        </ul>
       </Dialog>
     </>
   );
