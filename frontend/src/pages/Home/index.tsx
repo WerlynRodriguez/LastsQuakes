@@ -96,25 +96,15 @@ function App() {
       </header>
 
       <main>
-        <InfiniteLoader
-          isItemLoaded={(index) => index < features.length}
-          itemCount={paginOptions.total}
-          loadMoreItems={() => {}}
-        >
-          {({ onItemsRendered, ref }) => (
-            <VirtualList
-              itemData={features}
-              itemCount={features.length}
-              itemSize={window.innerHeight / 10}
-              onItemsRendered={onItemsRendered}
-              ref={ref}
-            >
-              {({ index, style }) => (
-                <CellFeature {...features[index]} index={index} style={style} />
-              )}
-            </VirtualList>
-          )}
-        </InfiniteLoader>
+          <VirtualList
+            itemData={features}
+            itemCount={features.length}
+            itemSize={window.innerHeight / 10}
+          >
+            {({ index, style }) => (
+              <CellFeature {...features[index]} index={index} style={style} />
+            )}
+          </VirtualList>
       </main>
 
       <footer>
