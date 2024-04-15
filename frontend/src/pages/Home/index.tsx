@@ -19,8 +19,8 @@ function App() {
   const [features, setFeatures] = useState<TFeature[]>([]);
 
   const [mgFilter, setMgFilter] = useState<Set<string>>(new Set());
-  const [paginOptions, setPaginOptions] = useState<TPagination>({
-    current_page: 1,
+  const [paginDisplay, setPaginDisplay] = useState<TPagination>({
+    current_page: 0,
     total: 0,
     per_page: 0,
   });
@@ -33,12 +33,12 @@ function App() {
     };
   }, []);
 
-  const getData = async () => {
+  const getData = async (page = paginDisplay.current_page) => {
     if (loadData) return;
     setLoadData(true);
 
     const url = FeaturesApi.getAll({
-      page: paginOptions.current_page,
+      page: page,
       per_page: 1000,
       mag_type: Array.from(mgFilter),
     });
@@ -47,10 +47,12 @@ function App() {
       signal: controllerRef.current.signal,
     })
       .then((res) => res.json())
-      .catch((error) => {console.log(error) });
+      .catch((error) => {
+        console.log(error);
+      });
 
     setFeatures(data.data);
-    setPaginOptions(data.pagination);
+    setPaginDisplay(data.pagination);
 
     setLoadData(false);
   };
@@ -64,7 +66,7 @@ function App() {
           <button
             className="primary rounded"
             aria-label="Buscar"
-            onClick={getData}
+            onClick={() => getData()}
           >
             <Icon name="search" />
           </button>
@@ -96,25 +98,23 @@ function App() {
       </header>
 
       <main>
-          <VirtualList
-            itemData={features}
-            itemCount={features.length}
-            itemSize={window.innerHeight / 10}
-          >
-            {({ index, style }) => (
-              <CellFeature {...features[index]} index={index} style={style} />
-            )}
-          </VirtualList>
+        <VirtualList
+          itemData={features}
+          itemCount={features.length}
+          itemSize={window.innerHeight / 10}
+        >
+          {({ index, style }) => (
+            <CellFeature {...features[index]} index={index} style={style} />
+          )}
+        </VirtualList>
       </main>
 
       <footer>
         <Pagination
-          total={paginOptions.total}
-          pageSize={paginOptions.per_page}
-          current={paginOptions.current_page}
-          onChange={(page) =>
-            setPaginOptions({ ...paginOptions, current_page: page })
-          }
+          total={paginDisplay.total}
+          pageSize={paginDisplay.per_page}
+          current={paginDisplay.current_page}
+          onChange={(page) => getData(page)}
         />
       </footer>
     </>

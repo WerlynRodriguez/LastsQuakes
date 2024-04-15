@@ -10,20 +10,26 @@ interface IPaginationProps {
 
 export default function (props: IPaginationProps) {
   const { total, pageSize, current, onChange } = props;
+  const pages = Math.ceil(total / pageSize);
 
   return (
     <div className="pagination">
-      <button disabled={current <= 1} onClick={() => onChange(current - 1)}>
+      <button
+        className="ghost"
+        disabled={current <= 1}
+        onClick={() => onChange(current - 1)}
+      >
         <Icon name="angle-left" />
         Anterior
       </button>
 
       <span>
-        Página {current} de {Math.ceil(total / pageSize)}
+        Página {current} de {pages}
       </span>
 
       <button
-        disabled={current >= Math.ceil(total / pageSize)}
+        className="ghost"
+        disabled={current >= pages}
         onClick={() => onChange(current + 1)}
       >
         Siguiente
