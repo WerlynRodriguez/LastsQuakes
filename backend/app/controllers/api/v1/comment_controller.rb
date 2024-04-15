@@ -3,7 +3,10 @@ class Api::V1::CommentController < ApplicationController
 
   # POST /api/v1/earthquakes/:earthquake_id/comments
   def create
-    comment = @earthquake.comments.new(comment_params)
+    comment = @earthquake.comments.new(
+      body: comment_params[:body],
+      earthquake_id: comment_params[:feature_id]
+    )
 
     if comment.save
       render json: comment, status: :created

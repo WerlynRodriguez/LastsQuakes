@@ -104,12 +104,22 @@ function App() {
 
     const form = e.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
+    const comment = formData.get("comment") as string;
+
+    if (!comment) { alert("El comentario no puede estar vacío"); return;}
+    if (comment.length < 5) { alert("El comentario debe tener al menos 5 caracteres"); return;}
+    if (comment.length > 50) { alert("El comentario no puede tener más de 50 caracteres"); return;}
 
     const url = CommentsApi.postByFeatureId(features[selectedFeature].id);
 
     const data: TComment = await fetch(url, {
       method: "POST",
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        body: comment,
+      }),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Unexpected response");
@@ -205,7 +215,7 @@ function App() {
           setMessages([]);
         }}
       >
-        <ul>
+        <ul className="messages">
           {messages.map((message, index) => (
             <Message
               key={index}
@@ -221,7 +231,7 @@ function App() {
               name="comment"
               type="text"
               required
-              maxLength={255}
+              maxLength={50}
               min={5}
               placeholder="Escribe un comentario"
             />
