@@ -1,0 +1,118 @@
+:root {
+    /* Color schemes */
+    color-scheme: light dark;
+    
+    --color-base-100: light-dark(#ffffff, #212529);
+    --color-base-200: light-dark(#f7f8fc, #34383b);
+    --color-base-300: light-dark(#d1d1d1, #868e96);
+    --color-content: light-dark(#f7f9fa, #343a40);
+
+    --color-font: light-dark(#1f2937, #f8f9fa);
+    --color-font-secondary: light-dark(#6c757d, #ced4da);
+    --color-primary: #ff7d11;
+
+    --shadow: 0 0.5rem 1rem rgba(0, 39, 124, 0.1);
+}
+
+html {
+    font-family: "Mulish", sans-serif;
+
+    /* Scrollbar */
+    scrollbar-color: var(--color-font) var(--color-base-200);
+    scrollbar-width: auto;
+    scroll-behavior: smooth;
+    scroll-padding-top: 4rem;
+}
+
+body {
+    margin: 0;
+
+    background-color: var(--color-base-100);
+    color: var(--color-font);
+}
+
+html,
+body,
+div#root {
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Philosopher", sans-serif;
+
+    & strong {
+        font-weight: 700;
+    }
+}
+
+input, button {
+    font-family: "Mulish", sans-serif;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+input {
+    width: 100%;
+    max-width: 25rem;
+    border: 1px solid var(--color-base-300);
+    background-color: var(--color-base-200);
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+}
+
+button {
+    min-width: 3rem;
+    cursor: pointer;
+    color: #f8f9fa;
+    border: 1px solid var(--color-primary);
+    transition: opacity 0.2s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active { opacity: 0.7;}
+
+    &.primary {
+        background-color: var(--color-primary);
+    }
+
+    &.text {
+        background-color: transparent;
+        border-radius: 0;
+        border-color: transparent;
+
+        &:hover {
+            background-color: var(--color-base-100);
+        }
+    }
+
+    &.ghost {
+        background-color: transparent;
+    }
+
+    &:not(.rounded) i {
+        margin-left: 0.5rem;
+    }
+
+    &.text-left {
+        text-align: left;
+    }
+
+    /* disabled */
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
+.join_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+* { box-sizing: border-box; }

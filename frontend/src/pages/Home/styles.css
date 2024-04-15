@@ -1,0 +1,46 @@
+div#root {
+  display: grid;
+  /* The header is on the top, and footer is bottom, The main tag muste be all available space */
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+}
+
+header, footer {
+  width: 100%;
+  padding: 0 1.5rem;
+}
+
+header {
+  padding-inline: 3rem;
+  padding-top: 1rem;
+
+  & table {
+    width: 100%;
+    border-bottom: 0.3rem solid var(--color-primary);
+
+    & thead {
+
+      & tr {
+        display: grid;
+        grid-template-columns: 2fr 0.2fr 0.7fr;
+
+        & th {
+          padding: 0.5rem;
+          text-align: left;
+        }
+      }
+    }
+  }
+}
+
+
+main { padding: 0 3rem; }
+
+/* On screens smaller than 768px */
+@media (max-width: 767.98px) {
+  main { padding: 0 1.5rem; }
+
+  header {
+    padding: 1rem 1.5rem;
+  }
+}
