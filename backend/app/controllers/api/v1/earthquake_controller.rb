@@ -31,7 +31,10 @@ class Api::V1::EarthquakeController < ApplicationController
   def validate_mag_type
     allowed_mag_type = ['md', 'ml', 'ms', 'mw', 'me', 'mi', 'mb', 'mlg']
 
-    @mag_type = Array(params[:mag_type]).select { |mag| allowed_mag_type.include?(mag) }
+    # example of "mag_type" = "ms,mw"
+
+    @mag_type = params.fetch(:mag_type, '').split(',')
+    @mag_type = @mag_type.select { |mag_type| allowed_mag_type.include?(mag_type) }
     @mag_type = allowed_mag_type if @mag_type.empty?
   end
 end
