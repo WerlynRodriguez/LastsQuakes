@@ -11,13 +11,15 @@ import { FeaturesApi, CommentsApi } from "../../api";
 import Dialog from "../../components/Dialog";
 
 import "./styles.css";
+import { TComment } from "../../types/comment";
+import Message from "../../components/Message";
 
 function App() {
   const [loadData, setLoadData] = useState<boolean>(false);
   const [features, setFeatures] = useState<TFeature[]>([]);
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
 
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<TComment[]>([]);
 
   const [mgFilter, setMgFilter] = useState<Set<string>>(new Set());
   const [paginDisplay, setPaginDisplay] = useState<TPagination>({
@@ -42,9 +44,9 @@ function App() {
     const abortController = new AbortController();
 
     const getComments = async () => {
-      const url = CommentsApi.getAllByFeatureId(selectedFeature);
+      const url = CommentsApi.getAllByFeatureId(features[selectedFeature].id);
 
-      const data: string[] = await fetch(url, {
+      const data: TComment[] = await fetch(url, {
         signal: abortController.signal,
       })
         .then((res) => {
@@ -171,7 +173,7 @@ function App() {
       >
         <ul>
           {messages.map((message, index) => (
-            <li key={index}>{message}</li>
+            <Message key={index} message={message.body} date={message.created_at} />
           ))}
         </ul>
       </Dialog>
