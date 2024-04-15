@@ -1,24 +1,29 @@
-# README
+# Backend section
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+> [!IMPORTANT]
+> All commands must point to the project address in the terminal: '...ProjectRoute/LastsQuakes/backend'.
 
-Things you may want to cover:
+## Installation 
+1. Run `bundle install` to install the dependencies.
 
-* Ruby version
+## Before use
+1. Create an `.env` file in the root of the backend project.
+2. Include the environment variable needed for the database connection:
+`BACKEND_DATABASE_PASSWORD = Your_password_here`
 
-* System dependencies
+OR
 
-* Configuration
+1. Modify `backend/config/database.yml` file
 
-* Database creation
+> [!NOTE]
+> You can also modify any other usage value in the development section.
 
-* Database initialization
+## Custom tasks
+```
+rake earthquake_data:fetch
+```
+This task collects and stores in the database, the information provided by an external api. This task can be executed several times without duplicating data.
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Use
+1. Execute `rails s`.
+2. The main url should be: [Features](http://[::1]:3000//api/v1/features)
