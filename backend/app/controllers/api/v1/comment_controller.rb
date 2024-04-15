@@ -19,11 +19,11 @@ class Api::V1::CommentController < ApplicationController
   private
 
   def comment_params
-    params.permit(:body, :earthquake_id)
+    params.permit(:body, :feature_id)
   end
 
   def set_earthquake
-    earthquake_id = comment_params[:earthquake_id].to_i
+    earthquake_id = comment_params[:feature_id].to_i
 
     if earthquake_id <= 0
       render json: { error: 'Invalid earthquake ID' }, status: :bad_request
