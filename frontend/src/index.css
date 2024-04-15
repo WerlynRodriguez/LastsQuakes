@@ -66,6 +66,7 @@ input {
 }
 
 button {
+    justify-content: center;
     min-width: 3rem;
     cursor: pointer;
     color: #f8f9fa;

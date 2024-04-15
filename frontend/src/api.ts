@@ -21,5 +21,6 @@ export const FeaturesApi = Object.freeze({
 });
 
 export const CommentsApi = Object.freeze({
-    getAllByFeatureId: (featureId: number) => makeUrl(`features/${featureId}/comment`)
+    getAllByFeatureId: (featureId: number) => makeUrl(`features/${featureId}/comment`),
+    postByFeatureId: (featureId: number) => makeUrl(`features/${featureId}/comment`)
 });

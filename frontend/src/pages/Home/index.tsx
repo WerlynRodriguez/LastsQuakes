@@ -50,11 +50,11 @@ function App() {
         signal: abortController.signal,
       })
         .then((res) => {
-          if (!res.ok) throw new Error("Error");
+          if (!res.ok) throw new Error("Unexpected response");
           return res.json();
         })
         .catch((error) => {
-          console.log(error);
+          alert("Error al obtener los comentarios");
         });
 
       if (data) setMessages(data);
@@ -85,13 +85,44 @@ function App() {
     })
       .then((res) => res.json())
       .catch((error) => {
-        console.log(error);
+        alert("Error al obtener los datos");
+        return {
+          data: [],
+          pagination: { current_page: 0, total: 0, per_page: 0 },
+        };
       });
 
     setFeatures(data.data);
     setPaginDisplay(data.pagination);
 
     setLoadData(false);
+  };
+
+  const onHandleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selectedFeature === null) return;
+
+    const form = e.currentTarget as HTMLFormElement;
+    const formData = new FormData(form);
+
+    const url = CommentsApi.postByFeatureId(features[selectedFeature].id);
+
+    const data: TComment = await fetch(url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Unexpected response");
+        return res.json();
+      })
+      .catch((error) => {
+        alert("Error al enviar el comentario");
+      });
+
+    if (data) {
+      setMessages([...messages, data]);
+      form.reset();
+    }
   };
 
   return (
@@ -169,13 +200,40 @@ function App() {
         id="feature-comments-dialog"
         title="Comentarios"
         open={selectedFeature !== null}
-        onClose={() => setSelectedFeature(null)}
+        onClose={() => {
+          setSelectedFeature(null);
+          setMessages([]);
+        }}
       >
         <ul>
           {messages.map((message, index) => (
-            <Message key={index} message={message.body} date={message.created_at} />
+            <Message
+              key={index}
+              message={message.body}
+              date={message.created_at}
+            />
           ))}
         </ul>
+
+        <form onSubmit={onHandleSubmit}>
+          <div className="join_container">
+            <input
+              name="comment"
+              type="text"
+              required
+              maxLength={255}
+              min={5}
+              placeholder="Escribe un comentario"
+            />
+            <button
+              className="primary rounded"
+              aria-label="Enviar"
+              type="submit"
+            >
+              <Icon name="paper-plane" />
+            </button>
+          </div>
+        </form>
       </Dialog>
     </>
   );
