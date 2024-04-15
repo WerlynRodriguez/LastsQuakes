@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import VirtualList from "../../components/VirtualList";
-import InfiniteLoader from "react-window-infinite-loader";
 import CellFeature from "../../components/CellFeature";
 import { EMagnitudeType } from "../../types/feature";
 import Icon from "../../components/Icon";
@@ -8,15 +7,17 @@ import Select from "../../components/Select";
 import Pagination from "../../components/Pagination";
 import type { TPagination } from "../../types/metadata";
 import type { TFeature, TFeatureCollection } from "../../types/feature";
+import { FeaturesApi } from "../../api";
+import Dialog from "../../components/Dialog";
 
 import "./styles.css";
-import { FeaturesApi } from "../../api";
 
 function App() {
   const controllerRef = useRef<AbortController>(new AbortController());
 
   const [loadData, setLoadData] = useState<boolean>(false);
   const [features, setFeatures] = useState<TFeature[]>([]);
+  const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
 
   const [mgFilter, setMgFilter] = useState<Set<string>>(new Set());
   const [paginDisplay, setPaginDisplay] = useState<TPagination>({
@@ -43,7 +44,7 @@ function App() {
       mag_type: Array.from(mgFilter),
     });
 
-    const data = await fetch(url, {
+    const data: TFeatureCollection = await fetch(url, {
       signal: controllerRef.current.signal,
     })
       .then((res) => res.json())
@@ -68,7 +69,7 @@ function App() {
             aria-label="Buscar"
             onClick={() => getData()}
           >
-            <Icon name="search" />
+            {loadData ? <Icon name="refresh" className="load" /> : <Icon name="search" />}
           </button>
 
           <Select
@@ -99,12 +100,18 @@ function App() {
 
       <main>
         <VirtualList
+          loading={loadData}
           itemData={features}
           itemCount={features.length}
           itemSize={window.innerHeight / 10}
         >
           {({ index, style }) => (
-            <CellFeature {...features[index]} index={index} style={style} />
+            <CellFeature
+              {...features[index]}
+              index={index}
+              style={style}
+              onClick={() => setSelectedFeature(index)}
+            />
           )}
         </VirtualList>
       </main>
@@ -117,6 +124,15 @@ function App() {
           onChange={(page) => getData(page)}
         />
       </footer>
+
+      <Dialog
+        id="feature-comments-dialog"
+        title="Comentarios"
+        open={selectedFeature !== null}
+        onClose={() => setSelectedFeature(null)}
+      >
+        selected feature index is {selectedFeature}
+      </Dialog>
     </>
   );
 }
