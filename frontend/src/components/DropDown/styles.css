@@ -9,6 +9,7 @@
     flex-direction: column;
     position: absolute;
     opacity: 0;
+    pointer-events: none;
     min-width: 160px;
     z-index: 1;
     margin-top: var(--drp-margin_element);
@@ -50,5 +51,6 @@
   &:not(.item-lost_focus) .dropdown-content:focus-within {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
   }
 }
